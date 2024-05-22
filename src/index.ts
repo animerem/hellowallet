@@ -15,8 +15,8 @@ if (!suppliedToPubkey) {
     console.log(`Please provide a public key to send to`);
     process.exit(1);
 }
-/*
-async () => {
+
+(async () => {
 
     const senderKeypair = getKeypairFromEnvironment("SECRET_KEY");
 
@@ -26,12 +26,14 @@ async () => {
 
     const connection = new Connection("http://127.0.0.1:8899", "confirmed");
 
-    await airdropIfRequired(
+    const senderBalance = await airdropIfRequired(
         connection,
         senderKeypair.publicKey,
         1 * LAMPORTS_PER_SOL,
         0.5 * LAMPORTS_PER_SOL,
     );
+
+    console.log(`Sender (${senderKeypair.publicKey}) balance: ${senderBalance}`);
 
     console.log(
         `✅ Loaded our own keypair, the destination public key, and connected to Solana`
@@ -40,11 +42,12 @@ async () => {
     const transaction = new Transaction();
 
     const LAMPORTS_TO_SEND = 5000;
+    const RENT_EXEMPTION = await connection.getMinimumBalanceForRentExemption(0);
 
     const sendSolInstruction = SystemProgram.transfer({
         fromPubkey: senderKeypair.publicKey,
         toPubkey,
-        lamports: LAMPORTS_TO_SEND,
+        lamports: LAMPORTS_TO_SEND + RENT_EXEMPTION,
     });
 
     transaction.add(sendSolInstruction);
@@ -57,4 +60,4 @@ async () => {
         `💸 Finished! Sent ${LAMPORTS_TO_SEND} to the address ${toPubkey}. `
     );
     console.log(`Transaction signature is ${signature}!`);
-};*/
+})();

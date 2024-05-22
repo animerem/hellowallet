@@ -14,7 +14,8 @@
             "program": "${workspaceFolder}/dist/index.js",
             "outFiles": [
                 "${workspaceFolder}/**/*.js"
-            ]
+            ],
+            "args": ["CenYq6bDRB7p73EjsPEpiYN7uveyPUTdXkDkgUduboaN"]
         }
     ]
 }
