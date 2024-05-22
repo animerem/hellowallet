@@ -1,63 +1,31 @@
-import {
-    Connection,
-    Transaction,
-    SystemProgram,
-    sendAndConfirmTransaction,
-    PublicKey,
-    LAMPORTS_PER_SOL,
-} from "@solana/web3.js";
-import "dotenv/config"
-import { getKeypairFromEnvironment, airdropIfRequired } from "@solana-developers/helpers";
+import { generateKeypair } from './keygen';
+import { transfer } from './transfer';
+import { Command } from 'commander';
 
-const suppliedToPubkey = process.argv[2] || null;
 
-if (!suppliedToPubkey) {
-    console.log(`Please provide a public key to send to`);
-    process.exit(1);
-}
+const program = new Command();
 
-(async () => {
+program
+  .name('my-cli')
+  .description('An example CLI for TypeScript')
+  .version('1.0.0');
 
-    const senderKeypair = getKeypairFromEnvironment("SECRET_KEY");
-
-    console.log(`suppliedToPubkey: ${suppliedToPubkey}`);
-
-    const toPubkey = new PublicKey(suppliedToPubkey);
-
-    const connection = new Connection("http://127.0.0.1:8899", "confirmed");
-
-    const senderBalance = await airdropIfRequired(
-        connection,
-        senderKeypair.publicKey,
-        1 * LAMPORTS_PER_SOL,
-        0.5 * LAMPORTS_PER_SOL,
-    );
-
-    console.log(`Sender (${senderKeypair.publicKey}) balance: ${senderBalance}`);
-
-    console.log(
-        `✅ Loaded our own keypair, the destination public key, and connected to Solana`
-    );
-
-    const transaction = new Transaction();
-
-    const LAMPORTS_TO_SEND = 5000;
-    const RENT_EXEMPTION = await connection.getMinimumBalanceForRentExemption(0);
-
-    const sendSolInstruction = SystemProgram.transfer({
-        fromPubkey: senderKeypair.publicKey,
-        toPubkey,
-        lamports: LAMPORTS_TO_SEND + RENT_EXEMPTION,
+program
+    .command('transfer')
+    .description('Transfer SOL to another account')
+    .argument('<receiverAddr>', 'Receiver address')
+    .action((receiverAddr) => {
+        transfer(receiverAddr);
     });
 
-    transaction.add(sendSolInstruction);
+program
+    .command('generate')
+    .description('Generate a new keypair')
+    .option('-s, --savePath <savePath>', 'Path to save the secret key')
+    .action((options) => {
+        generateKeypair(options.savePath);
+    });
 
-    const signature = await sendAndConfirmTransaction(connection, transaction, [
-        senderKeypair,
-    ]);
+program.parse(process.argv);
 
-    console.log(
-        `💸 Finished! Sent ${LAMPORTS_TO_SEND} to the address ${toPubkey}. `
-    );
-    console.log(`Transaction signature is ${signature}!`);
-})();
+

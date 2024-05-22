@@ -1,7 +1,9 @@
 {
   "dependencies": {
     "@solana-developers/helpers": "^2.3.0",
-    "@solana/web3.js": "^1.91.8"
+    "@solana/web3.js": "^1.91.8",
+    "bs58": "^5.0.0",
+    "commander": "^12.1.0"
   },
   "name": "hellowallet",
   "version": "1.0.0",
@@ -13,6 +15,7 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@types/commander": "^2.12.2",
     "typescript": "^5.4.5"
   }
 }
