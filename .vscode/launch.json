@@ -16,7 +16,8 @@
                 "${workspaceFolder}/**/*.js"
             ],
             //"args": ["transfer", "CenYq6bDRB7p73EjsPEpiYN7uveyPUTdXkDkgUduboaN"],
-            "args": ["generate", "-s", "./my-wallet.json"],
+            //"args": ["generate", "-s", "./my-wallet.json"],
+            "args": ["key-show"],
         }
     ]
 }

@@ -14,14 +14,17 @@ export class LocalKeyManager implements KeyManager, Signer {
             fs.unlinkSync(this.keystorePath);
         }
     }
-    getAddress(): string | null {
-        try {
-            return this.loadKey().publicKey.toBase58();
-        } catch (e) {
-            return null;
-        }
-    }
 
+    async getAddress(): Promise<string | null> {
+        return new Promise((resolve, reject) => {
+            try {
+                resolve(this.loadKey().publicKey.toBase58());
+            } catch (e) {
+                reject(null);
+            }
+        });
+    }
+      
     generateKey(overwrite: boolean = false) {        
 
         if (fs.existsSync(this.keystorePath) && !overwrite) {

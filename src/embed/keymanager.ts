@@ -7,6 +7,6 @@ export interface Signer {
 export interface KeyManager {
     generateKey(): any;
     purgeKey(): any;
-    getAddress(): string | null;
+    getAddress(): Promise<string | null>;
     
 }
