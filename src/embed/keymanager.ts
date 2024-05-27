@@ -1,10 +1,10 @@
-import web3js  from "@solana/web3.js";
-
-export interface Signer {
-    sign(txn:web3js.Transaction): any;
-}
+import { Command } from "commander";
 
 export interface KeyManager {
+
+    // Extends CLI commands for specialized key management.
+    populateCommands(program: Command): any;
+    
     generateKey(): any;
     purgeKey(): any;
     getAddress(): Promise<string | null>;

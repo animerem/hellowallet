@@ -1,9 +1,9 @@
-import { KeyManager, Signer } from "./keymanager";
+import { KeyManager } from "./keymanager";
 import web3js from "@solana/web3.js";
 
 interface WalletOperations {
     BuildTransaction(ix: web3js.TransactionInstruction[]): any;
-    SignTransaction(txn: web3js.Transaction, signer: Signer): any;
+    SignTransaction(txn: web3js.Transaction): any;
     SendTransaction(txn: web3js.Transaction): any;
 }
 
@@ -19,7 +19,7 @@ export class core implements WalletOperations {
         // Build a transaction using the keymanager.
     }
 
-    SignTransaction(txn: web3js.Transaction, signer: Signer) {
+    SignTransaction(txn: web3js.Transaction) {
         // Sign a transaction using keymanager.
     }
 

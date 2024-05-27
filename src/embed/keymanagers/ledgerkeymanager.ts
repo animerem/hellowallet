@@ -2,8 +2,9 @@ import TransportNodeHid from "@ledgerhq/hw-transport-node-hid";
 import Solana from "@ledgerhq/hw-app-solana";
 import { Keypair, PublicKey, Transaction, VersionedTransaction } from "@solana/web3.js";
 import { Wallet } from "@coral-xyz/anchor";
-import { KeyManager, Signer } from "../keymanager";
+import { KeyManager } from "../keymanager";
 import bs58 from 'bs58';
+import { Command } from "commander";
 
 // This is a mock of the Wallet class, which is used to sign transactions.
 // Do not use this in prod. We are force casting legacy transactions, and this is not safe.
@@ -57,12 +58,26 @@ export async function getLedgerWalletAddress(ledger: Solana): Promise<Buffer> {
 }
 
 
-export class LedgerKeyManager implements KeyManager, Signer {
+export class LedgerKeyManager implements KeyManager {
 
     solanaLedgerApp: Solana;
 
     constructor(solanaLedgerApp: Solana) {
         this.solanaLedgerApp = solanaLedgerApp;
+    }
+    populateCommands(program: Command) {
+        program
+        .command('key-show')
+        .description('Show the existing public key address')
+        .action(async () => {
+            this.getAddress()
+                .then((keypairAddress) => {
+                    console.log(`${keypairAddress}`);
+                })
+                .catch(() => {
+                    console.log(`Cannot access Ledger device.\nPlease ensure it is connected, unlocked, and running the Solana app.`);
+                });
+        });
     }
 
     public static async createAsync(): Promise<LedgerKeyManager> {
