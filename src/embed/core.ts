@@ -1,29 +1,40 @@
 import { KeyManager } from "./keymanager";
-import web3js from "@solana/web3.js";
+import { Connection, PublicKey, TransactionInstruction, TransactionMessage, VersionedTransaction } from "@solana/web3.js";
+import config from "./config";
 
-interface WalletOperations {
-    BuildTransaction(ix: web3js.TransactionInstruction[]): any;
-    SignTransaction(txn: web3js.Transaction): any;
-    SendTransaction(txn: web3js.Transaction): any;
-}
 
-export class core implements WalletOperations {
+export class core {
 
     readonly keymanager: KeyManager;
+    readonly connection: Connection;
 
     constructor(keymanager: KeyManager) {
         this.keymanager = keymanager;
+        this.connection = new Connection(config.rpcUrl, config.commitment);
     }
 
-    BuildTransaction(ix: web3js.TransactionInstruction[]) {
-        // Build a transaction using the keymanager.
+    async BuildTransaction(ix: TransactionInstruction[], payer: PublicKey) {
+
+        const connection = this.connection;
+
+        // create v0 compatible message
+        let {blockhash} = await connection.getLatestBlockhash();
+        const messageV0 = new TransactionMessage({
+            payerKey: payer,
+            recentBlockhash: blockhash,
+            instructions: ix,
+        }).compileToV0Message();
+
+        return new VersionedTransaction(messageV0);
     }
 
-    SignTransaction(txn: web3js.Transaction) {
+    async SignTransaction(txn: VersionedTransaction) {
         // Sign a transaction using keymanager.
+        await this.keymanager.sign(txn);
     }
 
-    SendTransaction(txn: web3js.Transaction) {
+    async SendTransaction(txn: VersionedTransaction) {
         // Send a transaction to the network.
+        return this.connection.sendTransaction(txn);
     }
 }

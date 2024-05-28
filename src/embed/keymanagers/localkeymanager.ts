@@ -60,12 +60,12 @@ export class LocalKeyManager implements KeyManager {
         }
     }
 
-    async getAddress(): Promise<string | null> {
+    async getAddress(): Promise<string> {
         return new Promise((resolve, reject) => {
             try {
                 resolve(this.loadKey().publicKey.toBase58());
             } catch (e) {
-                reject(null);
+                reject();
             }
         });
     }
@@ -88,7 +88,17 @@ export class LocalKeyManager implements KeyManager {
         return web3js.Keypair.fromSecretKey(secretKey);
     }
 
-    sign(txn: web3js.Transaction) {
-        txn.sign(this.loadKey());
+    getPublicKey(): Promise<web3js.PublicKey> {
+        return new Promise((resolve, reject) => {
+            try {
+                resolve(this.loadKey().publicKey);
+            } catch (e) {
+                reject();
+            }
+        });
+    }
+
+    sign(txn: web3js.VersionedTransaction) {
+        txn.sign([this.loadKey()]);
     }
 }

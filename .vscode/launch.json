@@ -17,7 +17,7 @@
             ],
             //"args": ["transfer", "CenYq6bDRB7p73EjsPEpiYN7uveyPUTdXkDkgUduboaN"],
             //"args": ["generate", "-s", "./my-wallet.json"],
-            "args": ["key-show"],
+            "args": ["transfer-sol", "46DUbNg6P5LjuYs3KX9VF6QL2rZDJHs1tc7t6Vmc9HXX", "100"],
         }
     ]
 }

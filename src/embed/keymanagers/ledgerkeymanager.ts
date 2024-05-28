@@ -65,6 +65,9 @@ export class LedgerKeyManager implements KeyManager {
     constructor(solanaLedgerApp: Solana) {
         this.solanaLedgerApp = solanaLedgerApp;
     }
+    async getPublicKey(): Promise<PublicKey> {
+        return new PublicKey(await this.getAddress());
+    }
     populateCommands(program: Command) {
         program
         .command('key-show')
@@ -92,11 +95,15 @@ export class LedgerKeyManager implements KeyManager {
     purgeKey() {
         throw new Error("Method not implemented.");
     }
-    async getAddress(): Promise<string | null> {
+    async getAddress(): Promise<string> {
         const {address} = await this.solanaLedgerApp.getAddress(firstAccountPathSolana);
         return bs58.encode(address);
     }
-    sign(txn: Transaction) {
-        throw new Error("Method not implemented.");
+    async sign(txn: VersionedTransaction) {
+        const txBuffer = Buffer.from(txn.message.serialize());
+        
+        const {signature} = await this.solanaLedgerApp.signTransaction(firstAccountPathSolana, txBuffer);
+
+        txn.addSignature(new PublicKey(await this.getAddress()), signature);        
     }
 }
