@@ -2,7 +2,6 @@ import { core } from './embed/core';
 import { ix_Transfer } from './embed/instructionbuilder';
 import { LedgerKeyManager } from './embed/keymanagers/ledgerkeymanager';
 import { LocalKeyManager } from './embed/keymanagers/localkeymanager';
-import { transfer } from './transfer';
 import { Command } from 'commander';
 
 (async () => {
@@ -32,6 +31,6 @@ import { Command } from 'commander';
             console.log(`https://explorer.solana.com/tx/${txId}?cluster=devnet`);
         });
 
-    embeddedWallet.keymanager.populateCommands(program);
+    embeddedWallet.keymanager.populateCommands(program); //TODO: Decouple keymanager from CLI.
     program.parse(process.argv);
 })();
