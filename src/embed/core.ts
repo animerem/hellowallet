@@ -1,6 +1,8 @@
 import { KeyManager } from "./keymanager";
 import { Connection, PublicKey, TransactionInstruction, TransactionMessage, VersionedTransaction } from "@solana/web3.js";
-import config from "./config";
+import config, { KeystoreType } from "./config";
+import { LedgerKeyManager } from './keymanagers/ledgerkeymanager';
+import { LocalKeyManager } from './keymanagers/localkeymanager';
 
 
 export class core {
@@ -11,6 +13,37 @@ export class core {
     constructor(keymanager: KeyManager) {
         this.keymanager = keymanager;
         this.connection = new Connection(config.rpcUrl, config.commitment);
+    }
+
+    static async CreateAsync() {
+        let keymanager: KeyManager;
+
+        switch (config.keystoreType) {
+            case KeystoreType.Local:
+                keymanager = new LocalKeyManager();
+                break;
+            case KeystoreType.Ledger:
+                keymanager = await LedgerKeyManager.createAsync();
+                break;
+            default:
+                throw new Error(`Unsupported keystore type.`);
+        }
+
+        return new core(keymanager);
+    }
+
+    GetKeystoreType() {
+        return config.keystoreType;
+    }
+
+    SetKeystoreType(keystoreType: string) {
+        // Assert string is a valid enum value
+        if (!Object.values(KeystoreType).includes(keystoreType as KeystoreType)) {
+            throw new Error(`Unsupported keystore type: ${keystoreType}`);
+        }
+
+        config.keystoreType = keystoreType as KeystoreType;
+        config.write();
     }
 
     async BuildTransaction(ix: TransactionInstruction[], payer: PublicKey) {

@@ -1,7 +1,6 @@
 import web3js from "@solana/web3.js";
 import { KeyManager } from "../keymanager";
 import fs from "fs";
-import { Command } from "commander";
 
 export class LocalKeyManager implements KeyManager {
 
@@ -9,49 +8,6 @@ export class LocalKeyManager implements KeyManager {
 
     constructor() {
         this.keystorePath = "./default_key.json";
-    }
-
-    populateCommands(program: Command) {
-        program
-            .command('key-generate')
-            .description('Generate a new keypair')
-            .action(() => {
-                this.getAddress()
-                    .then(() => {
-                        console.log(`Keypair already exists. Delete the key before generating a new one.`);
-                    })
-                    .catch(async () => {
-                        this.generateKey();
-                        console.log(`New keypair generated for address: ${await this.getAddress()}`);
-                    });
-            });
-
-        program
-            .command('key-delete')
-            .description('Delete the existing keypair. WARNING: This action is irreversible.')
-            .action(async () => {
-                this.getAddress()
-                    .then((keypairAddress) => {
-                        this.purgeKey();
-                        console.log(`Deleted keypair for address: ${keypairAddress}.`);
-                    })
-                    .catch(() => {
-                        console.log(`No keypair exists. Generate a new keypair.`);
-                    });
-            });
-
-        program
-            .command('key-show')
-            .description('Show the existing public key address')
-            .action(async () => {
-                this.getAddress()
-                    .then((keypairAddress) => {
-                        console.log(`${keypairAddress}`);
-                    })
-                    .catch(() => {
-                        console.log(`No keypair exists. Generate a new keypair.`);
-                    });
-            });
     }
 
     purgeKey() {
