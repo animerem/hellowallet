@@ -1,5 +1,5 @@
-import { core } from './embed/core';
-import { ix_Transfer } from './embed/instructionbuilder';
+import { core } from 'tinywallet/core';
+import { ix_Transfer } from 'tinywallet/instructionbuilder';
 import { Command } from 'commander';
 
 (async () => {
