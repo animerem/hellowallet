@@ -47,13 +47,20 @@ import { Command } from 'commander';
     program
         .command('key-show')
         .description('Show the existing public key address')
-        .action(async () => {
-            await embeddedWallet.keymanager.getAddress()
+        .action(() => {
+            embeddedWallet.keymanager.getAddress()
                 .then((keypairAddress) => {
                     console.log(`${keypairAddress}`);
                 })
                 .catch(() => {
-                    console.log(`Cannot access Ledger device.\nPlease ensure it is connected, unlocked, and running the Solana app.`);
+                    switch (embeddedWallet.GetKeystoreType()) {
+                        case 'ledger':
+                            console.log(`Cannot access Ledger device.\nPlease ensure it is connected, unlocked, and running the Solana app.`);
+                            break;
+                        default:
+                            console.log(`No keypair exists. Generate a new keypair.`);
+                            break;
+                    }
                 });
         });
 
