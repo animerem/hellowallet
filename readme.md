@@ -1,0 +1,1 @@
+# Template Wallet 'Hello World'
