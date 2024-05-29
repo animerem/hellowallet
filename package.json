@@ -1,6 +1,7 @@
 {
   "dependencies": {
-    "commander": "^12.1.0"
+    "commander": "^12.1.0",
+    "tinywallet": "github:kilogold/tinywallet.git#main"
   },
   "name": "hellowallet",
   "version": "1.0.0",
