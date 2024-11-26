@@ -28,8 +28,8 @@ import { Command } from 'commander';
         });
 
     program
-        .command('transfer-sol')
-        .description('Transfer SOL to another account')
+        .command('transfer-lamports')
+        .description('Transfer Lamport amounts to another account')
         .argument('<receiverAddr>', 'Receiver address')
         .argument('<amount>', 'Lamports to send')
         .action(async (receiverAddr, amount) => {
@@ -43,7 +43,15 @@ import { Command } from 'commander';
 
             console.log(`https://explorer.solana.com/tx/${txId}?cluster=devnet`);
         });
-    
+
+    program
+        .command('show-balance')
+        .description('Show the Lamport balance of the wallet')
+        .action(async () => {
+            const balance = await embeddedWallet.connection.getBalance(await embeddedWallet.keymanager.getPublicKey());
+            console.log(`Balance: ${balance} Lamports`);
+        });
+
     program
         .command('key-show')
         .description('Show the existing public key address')

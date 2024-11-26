@@ -4,16 +4,14 @@
     "tinywallet": "github:kilogold/tinywallet.git#main"
   },
   "name": "hellowallet",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "author": "kilogold",
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "@types/commander": "^2.12.2",
-    "typescript": "^5.4.5"
+    "@types/commander": "^2.12.5",
+    "typescript": "^5.7.2",
+    "ts-node": "^10.9.2"
   }
 }
