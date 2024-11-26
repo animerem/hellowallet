@@ -1,16 +1,21 @@
 # Template Wallet 'Hello World'
 
 ## Overview
-This project is a simple "Hello World" template for a wallet application. It demonstrates the basic setup and functionality of a wallet application using modern web technologies.
+This project is a simple "Hello World" template for a wallet application. 
+It demonstrates the basic usage of the [tinywallet](https://github.com/solana-developers/tinywallet) library and functionality of a wallet CLI application using Typescript.
 
-## Features
-- Basic wallet setup
-- Simple transaction handling
-- User-friendly interface
+The `@tinywallet` library requires an `.env` file containing the following configuration settings:
 
-## Prerequisites
-- Node.js (version 14.0.0 or later)
-- npm (version 6.0.0 or later)
+- **API_PUBLIC_KEY** and **API_PRIVATE_KEY**: Used for authenticating API requests.
+- **BASE_URL**: The endpoint for the API that the wallet interacts with.
+- **ORGANIZATION_ID** and **WALLET_ID**: Identifiers for managing and accessing wallet resources.
+- **RPC_URL**: URL of the Solana devnet RPC server for blockchain operations.
+- **COMMITMENT**: Defines the level of commitment for transactions and queries.
+- **KEYSTORE_TYPE**: Specifies the type of keystore being used.
+- **ENV_PRIVATE_KEY**: A private key for managing keys within the application.
+
+These variables ensure secure and effective interaction with the Solana blockchain and associated API services.
+
 
 ## Installation
 1. Clone the repository:
@@ -25,6 +30,8 @@ This project is a simple "Hello World" template for a wallet application. It dem
    ```bash
    npm install
    ```
+
+4. Create the `.env` file by copying the [`.env.example`](https://github.com/solana-developers/tinywallet/blob/main/.env.example)
 
 ## Usage
 To start the application, run:

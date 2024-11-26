@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "commander": "^12.1.0",
-    "tinywallet": "github:kilogold/tinywallet.git#main"
+    "tinywallet": "github:solana-developers/tinywallet.git#main"
   },
   "name": "hellowallet",
   "version": "1.1.0",
@@ -10,8 +10,7 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "@types/commander": "^2.12.5",
-    "typescript": "^5.7.2",
-    "ts-node": "^10.9.2"
+    "@types/commander": "^2.12.2",
+    "typescript": "^5.4.5"
   }
 }

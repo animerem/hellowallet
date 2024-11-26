@@ -1,8 +1,9 @@
-import { core } from 'tinywallet/core';
-import { ix_Transfer } from 'tinywallet/instructionbuilder';
+import { core } from "tinywallet/dist/core";
+import { ix_Transfer } from "tinywallet/dist/instructionbuilder";
 import { Command } from 'commander';
 
 (async () => {
+    require('dotenv').config();
     const embeddedWallet = await core.CreateAsync();
     const program = new Command();
 
@@ -10,15 +11,6 @@ import { Command } from 'commander';
         .name('hellowallet')
         .description('An example CLI for an embedded Solana wallet')
         .version('1.0.0');
-
-    program
-        .command('set-keystore-type')
-        .description('Set the keystore type')
-        .argument('<type>', 'Keystore types: ledger, local')
-        .action((type) => {
-            embeddedWallet.SetKeystoreType(type);
-            console.log(`Keystore type set to: ${type}`);
-        });
 
     program
         .command('get-keystore-type')
@@ -34,8 +26,9 @@ import { Command } from 'commander';
         .argument('<amount>', 'Lamports to send')
         .action(async (receiverAddr, amount) => {
 
-            const ix = await ix_Transfer(embeddedWallet, receiverAddr, amount);
-            const txn = await embeddedWallet.BuildTransaction(ix, await embeddedWallet.keymanager.getPublicKey());
+            const senderKey = await embeddedWallet.keymanager.getPublicKey();
+            const ix = await ix_Transfer(senderKey.toBase58(), receiverAddr, amount);
+            const txn = await embeddedWallet.BuildTransaction([ix], senderKey);
             
             await embeddedWallet.SignTransaction(txn);
 
@@ -57,7 +50,7 @@ import { Command } from 'commander';
         .description('Show the existing public key address')
         .action(() => {
             embeddedWallet.keymanager.getAddress()
-                .then((keypairAddress) => {
+                .then((keypairAddress: string) => {
                     console.log(`${keypairAddress}`);
                 })
                 .catch(() => {
@@ -94,7 +87,7 @@ import { Command } from 'commander';
             .description('Delete the existing keypair. WARNING: This action is irreversible.')
             .action(async () => {
                 embeddedWallet.keymanager.getAddress()
-                    .then((keypairAddress) => {
+                    .then((keypairAddress: string) => {
                         embeddedWallet.keymanager.purgeKey!();
                         console.log(`Deleted keypair for address: ${keypairAddress}.`);
                     })
