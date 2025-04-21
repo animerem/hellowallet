@@ -25,16 +25,27 @@ import { Command } from 'commander';
         .argument('<receiverAddr>', 'Receiver address')
         .argument('<amount>', 'Lamports to send')
         .action(async (receiverAddr, amount) => {
+            try {
+                const senderKey = await embeddedWallet.keymanager.getPublicKey();
+                const ix = await ix_Transfer(senderKey.toBase58(), receiverAddr, amount);
+                const txn = await embeddedWallet.BuildTransaction([ix], senderKey);
 
-            const senderKey = await embeddedWallet.keymanager.getPublicKey();
-            const ix = await ix_Transfer(senderKey.toBase58(), receiverAddr, amount);
-            const txn = await embeddedWallet.BuildTransaction([ix], senderKey);
-            
-            await embeddedWallet.SignTransaction(txn);
+                await embeddedWallet.SignTransaction(txn);
 
-            const txId = await embeddedWallet.SendTransaction(txn);
+                const txId = await embeddedWallet.SendTransaction(txn);
 
-            console.log(`https://explorer.solana.com/tx/${txId}?cluster=devnet`);
+                console.log(`✅ Transfer successful: https://explorer.solana.com/tx/${txId}?cluster=devnet`);
+            } catch (error: any) {
+                console.error("❌ Transfer failed:");
+
+                if (error instanceof Error) {
+                    console.error("Error message:", error.message);
+                } else {
+                    console.error("Unknown error:", error);
+                }
+
+                process.exit(1);
+            }
         });
 
     program
